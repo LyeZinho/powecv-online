@@ -1,11 +1,9 @@
 services:
   app:
     build: .
-    ports:
-      - "8985:8985"
-    env_file:
-      - .env.local
-    volumes:
-      - ./src:/app/src
-    command: ["npm", "run", "dev", "--", "--port=8985"]
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.powercv.rule=Host(`${DOMAIN:-powercv.localhost}`)"
+      - "traefik.http.routers.powercv.entrypoints=web"
+      - "traefik.http.services.powercv.loadbalancer.server.port=80"
